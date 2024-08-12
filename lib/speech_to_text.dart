@@ -1,3 +1,4 @@
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -13,6 +14,7 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
   final SpeechToText _speechToText = SpeechToText();
   bool _speechEnabled = false;
   String _text = '';
+  double _confidenceLevel = 0;
 
   @override
   void initState() {
@@ -22,7 +24,9 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
 
   void _initSpeech() async {
     _speechEnabled = await _speechToText.initialize();
-    setState(() {});
+    setState(() {
+      _confidenceLevel = 0;
+    });
   }
 
   void _startListening() async {
@@ -38,6 +42,7 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
   void _onSpeechResult(SpeechRecognitionResult result) {
     setState(() {
       _text = result.recognizedWords;
+      _confidenceLevel = result.confidence;
     });
   }
 
@@ -48,9 +53,17 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
         title: const Text('Speech to Text Demo'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: _speechToText.isListening ? _stopListening : _startListening,
-        child: Icon(_speechToText.isListening ? Icons.mic : Icons.mic_none),
+      floatingActionButton: AvatarGlow(
+        animate: _speechToText.isListening,
+        glowColor: Colors.blueAccent,
+        duration: const Duration(milliseconds: 1000),
+        repeat: true,
+        child: FloatingActionButton(
+          backgroundColor: Colors.blue,
+          onPressed:
+              _speechToText.isListening ? _stopListening : _startListening,
+          child: Icon(_speechToText.isListening ? Icons.mic : Icons.mic_none),
+        ),
       ),
       body: SizedBox(
         width: double.infinity,
@@ -68,13 +81,21 @@ class _SpeechToTextScreenState extends State<SpeechToTextScreen> {
                 fontWeight: FontWeight.w400,
               ),
             ),
+            if (_speechToText.isNotListening && _confidenceLevel > 0)
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Text(
+                  "Confidence: ${(_confidenceLevel * 100).toStringAsFixed(1)} %",
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ),
             Expanded(
                 child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(20.0),
               child: Text(
-                _text,
+                '"$_text"',
                 style: const TextStyle(
-                  fontSize: 20.0,
+                  fontSize: 25.0,
                   color: Colors.black,
                   fontWeight: FontWeight.w400,
                 ),
