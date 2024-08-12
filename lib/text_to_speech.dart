@@ -23,6 +23,7 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
     await flutterTts.setLanguage("en-IN"); //IN //US
     await flutterTts.setPitch(1.0);
     await flutterTts.speak(text);
+    print(flutterTts.getVoices);
   }
 
   @override

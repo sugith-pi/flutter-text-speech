@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_speech/text_to_speech.dart';
+import 'package:flutter_speech/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const TextToSpeechScreen(),
+      home: const HomePage(),
     );
   }
 }
